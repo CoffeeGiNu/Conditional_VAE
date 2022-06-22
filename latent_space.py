@@ -74,3 +74,28 @@ if __name__ == "__main__":
             axes[i][j].imshow(y[l * (l - 1 - i) + j], "gray")
     fig.subplots_adjust(wspace=0, hspace=0)
     fig.savefig("./figure/from_lattice_point.png")
+    
+    # for i in range(0, 10):
+    #     l = 25
+    #     x = np.linspace(-2, 2, l)
+    #     y = np.linspace(-2, 2, l)
+    #     t_class = i
+    #     target_input = torch.full((l*l,), t_class)
+    #     z_x, z_y = np.meshgrid(x, y)
+    #     fig, ax = plt.subplots(1, 1, figsize=(9, 9))
+    #     ax.plot(z_x, z_y, "o", ms=4, color="k")
+    #     fig.savefig("./figure/lattice_point.png")
+
+    #     Z = torch.tensor(np.array([z_x, z_y]), dtype=torch.float).permute(1,2,0) 
+    #     Z = Z.reshape((-1, 2))
+    #     y = model.decoder(Z, target_input).cpu().detach().numpy().reshape(-1, 28, 28) 
+    #     fig, axes = plt.subplots(l, l, figsize=(9, 9))
+
+    #     for i in range(l):
+    #         for j in range(l):
+    #             axes[i][j].set_xticks([])
+    #             axes[i][j].set_yticks([])
+    #             axes[i][j].imshow(y[l * (l - 1 - i) + j], "gray")
+    #     fig.subplots_adjust(wspace=0, hspace=0)
+    #     fig.savefig("./figure/from_lattice_point.png")
+    #     fig.savefig(f"./figure/background_{t_class}.png")

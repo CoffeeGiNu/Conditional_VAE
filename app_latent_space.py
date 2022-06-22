@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from utils import fix_seed
-from models import VariationalAutoEncoder
+from models import ConditionalVariationalAutoEncoder
 
 # References: 
 # https://matplotlib.org/3.1.1/api/backend_bases_api.html#matplotlib.backend_bases.MouseEvent
@@ -14,6 +14,7 @@ class App(object):
     def __init__(self, model, device='cpu', show_exsamples=True, clear=True):
         self.fig, self.ax = plt.subplots(1, 1, figsize=(9, 9))
         self.x, self.y = 0.0, 0.0
+        self.target_class = 0
         self.clear = clear
         self.model = model
         self.device = device
@@ -54,12 +55,13 @@ class App(object):
             self.xlim = self.ax.get_xlim()
             self.ylim = self.ax.get_ylim()
         if not self.back_im:
-            self.back_im = Image.open("./figure/background.png")
+            self.back_im = Image.open(f"./figure/background_{self.target_class}.png")
         self.ax.imshow(self.back_im, extent=[*self.xlim, *self.ylim], alpha=0.8)
     
     def reconst_img(self):
-        z = torch.tensor([self.x, self.y], dtype=torch.float).to(self.device)
-        reconst = self.model.decoder(z).cpu().detach().numpy().reshape(28, 28)
+        z = torch.tensor([self.x, self.y], dtype=torch.float).reshape((1, 2)).to(self.device)
+        l = torch.tensor(self.target_class).reshape((1, )).to(self.device)
+        reconst = self.model.decoder(z, l).cpu().detach().numpy().reshape(28, 28)
         self.ax.imshow(reconst*255, "gray", extent=[2,4,2,4], alpha=1)
 
     def draw(self):
@@ -112,6 +114,13 @@ class App(object):
             if self.show_examples:
                 self._show_examples_plot()
             self.ax.figure.canvas.draw() 
+        try:
+            self.target_class = int(event.key)
+            self.draw()
+            self.back_im = Image.open(f"./figure/background_{self.target_class}.png")
+            self.ax.imshow(self.back_im, extent=[*self.xlim, *self.ylim], alpha=0.8)
+        except:
+            pass
         print(f'on_key(): {event.key}, {self.x:1.2f}, {self.y:1.2f}', )
 
 
@@ -126,7 +135,7 @@ if __name__ == "__main__":
 
     # _, _, dataset_test = load_tfds("mnist", batch_size=batch_size, seed=seed, preprocess_fn=None)
 
-    model = VariationalAutoEncoder(x_dim, z_dim, device)
+    model = ConditionalVariationalAutoEncoder(x_dim, z_dim, 10, device)
     model.load_state_dict(torch.load("./models/checkpoint.pth"))
     model.eval()
     for param in model.parameters():
