@@ -127,7 +127,7 @@ if __name__ == "__main__":
     # _, _, dataset_test = load_tfds("mnist", batch_size=batch_size, seed=seed, preprocess_fn=None)
 
     model = VariationalAutoEncoder(x_dim, z_dim, device)
-    model.load_state_dict(torch.load("./models/checkpoint_z2.pth"))
+    model.load_state_dict(torch.load("./models/checkpoint.pth"))
     model.eval()
     for param in model.parameters():
         param.grad = None

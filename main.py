@@ -16,9 +16,9 @@ if __name__ == "__main__":
     seed = 42
     fix_seed(seed)
     x_dim = 28 * 28
-    z_dim = 3
-    batch_size = 1024
-    num_epochs = 10
+    z_dim = 2
+    batch_size = 128
+    num_epochs = 1000
     learning_rate = 0.001
     loss_fn = lambda lower_bound: -sum(lower_bound)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

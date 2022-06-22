@@ -3,10 +3,10 @@ import random
 import numpy as np
 import tensorflow as tf
 
-import matplotlib
+# import matplotlib
 import matplotlib.pyplot as plt
 
-matplotlib.style.use('ggplot')
+# matplotlib.style.use('ggplot')
 
 
 def fix_seed(seed):
