@@ -47,5 +47,5 @@ if __name__ == "__main__":
             model = epoch_loop(model, dataset_valid, optimizer, loss_fn, device, e, num_epochs, batch_size, is_train=False, earlystopping=earlystopping, profiler=profiler, writer=writer)
 
             if earlystopping.early_stop:
-                writer.add_graph(model)
+                # writer.add_graph(model)
                 break
