@@ -60,7 +60,7 @@ def epoch_loop(model, data_set, optimizer, criterion, device, epoch, num_epochs,
                 r = model.decoder(z, l)
                 r = torch.reshape(r, (r.shape[0], 1, 28, 28))
                 grid = torchvision.utils.make_grid(r, nrow=10)
-                writer.add_images("reconstraction image", grid, global_step=epoch)
+                writer.add_image("reconstraction image", grid)
         if earlystopping:
             earlystopping((running_loss), model)
     
