@@ -29,6 +29,15 @@ def epoch_loop(model, data_set, optimizer, criterion, device, epoch, num_epochs,
         unit='batch',
         leave=True
     ) as pbar:
+        if writer:
+            if is_train:
+                l = torch.tensor([np.arange(0, 10)]).reshape((-1,))
+                z = torch.tensor([[-3, 0]], dtype=torch.float).repeat((10, 1))
+                r = model.decoder(z, l)
+                r = torch.reshape(r, (r.shape[0], 1, 28, 28))
+                # grid = torchvision.utils.make_grid(r, nrow=10)
+                writer.add_images("reconstraction image", r, global_step=epoch)
+                
         total = loss_sum = accuracy_sum = 0
         pbar.set_description(
             f"Epoch[{epoch}/{num_epochs}]({'train' if is_train else 'valid'})")
@@ -53,14 +62,6 @@ def epoch_loop(model, data_set, optimizer, criterion, device, epoch, num_epochs,
             if profiler:
                 profiler.step()
             pbar.update(1)
-        if writer:
-            if is_train:
-                l = torch.tensor([np.arange(0, 10)]).reshape((-1,))
-                z = torch.tensor([[-3, 0]], dtype=torch.float).repeat((10, 1))
-                r = model.decoder(z, l)
-                r = torch.reshape(r, (r.shape[0], 1, 28, 28))
-                grid = torchvision.utils.make_grid(r, nrow=10)
-                writer.add_image("reconstraction image", grid, global_step=epoch)
         if earlystopping:
             earlystopping((running_loss), model)
     
