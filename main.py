@@ -11,6 +11,7 @@ from datasets import load_tfds, pre_train_preprocessing
 
 
 if __name__ == "__main__":
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     log_dir = "./logs"
     writer = SummaryWriter(log_dir)
     seed = 42
@@ -21,7 +22,6 @@ if __name__ == "__main__":
     num_epochs = 1000
     learning_rate = 0.001
     loss_fn = lambda lower_bound: -sum(lower_bound)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     os.makedirs(log_dir) if not os.path.exists(log_dir) else None
     
