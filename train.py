@@ -33,8 +33,9 @@ def epoch_loop(model, data_set, optimizer, criterion, device, epoch, num_epochs,
             if is_train:
                 l = torch.tensor([np.arange(0, 10)]).reshape((-1,)).to(device)
                 z = torch.tensor([[-3, 0]], dtype=torch.float).repeat((10, 1)).to(device)
+                decoder = model.decoder.to(device)
                 with torch.no_grad():
-                    r = model.decoder(z, l)
+                    r = decoder(z, l)
                 r = torch.reshape(r, (r.shape[0], 1, 28, 28))
                 grid = torchvision.utils.make_grid(r, nrow=10)
                 writer.add_image("reconstraction image", grid, global_step=epoch)

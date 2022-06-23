@@ -19,7 +19,7 @@ class Encoder(nn.Module):
         self.log_var = nn.Linear(256, z_dim)
     
     def forward(self, x, l):
-        l_onehot = F.one_hot(l, num_classes=self.num_classes).to(self.device)
+        l_onehot = F.one_hot(l, num_classes=self.num_classes)
         x_concat = torch.cat((x, l_onehot), dim=1)
 
         x = torch.relu(self.fc1(x_concat))
@@ -45,7 +45,7 @@ class Decoder(nn.Module):
         self.fc3 = nn.Linear(512, 784)
     
     def forward(self, z, l):
-        l_onehot = F.one_hot(l, num_classes=self.num_classes).to(self.device)
+        l_onehot = F.one_hot(l, num_classes=self.num_classes)
         z_concat = torch.cat((z, l_onehot), dim=1)
 
         z = torch.relu(self.fc1(z_concat))
