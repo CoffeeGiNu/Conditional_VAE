@@ -9,7 +9,7 @@ if __name__ == "__main__":
     step = 50
     x_dim = 28 * 28
     z_dim = 2
-    t_class = 8
+    t_class = 2
     target_input = torch.full((step,), t_class)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         z1_to_z2_list.append(torch.cat([((z1 * ((step - i) / step)) + (z2 * (i / step))) for i in range(step)]).reshape(step, z_dim))
 
     for z1_to_z2 in z1_to_z2_list:
-        y1_to_y2_list.append(model.decoder(z1_to_z2, target_class).cpu().detach().numpy().reshape(-1, 28, 28))
+        y1_to_y2_list.append(model.decoder(z1_to_z2, target_input).cpu().detach().numpy().reshape(-1, 28, 28))
 
     for n in range(len(y1_to_y2_list)):
         fig, ax = plt.subplots(1, 1, figsize=(9,9))

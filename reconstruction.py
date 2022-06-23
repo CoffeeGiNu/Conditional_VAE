@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from utils import fix_seed
-from models import VariationalAutoEncoder
+from models import ConditionalVariationalAutoEncoder
 from datasets import load_tfds
 
 
@@ -12,26 +12,28 @@ if __name__ == "__main__":
     seed = 42
     fix_seed(seed)
     x_dim = 28 * 28
-    z_dim = 10
+    z_dim = 2
     batch_size = 10
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     _, _, dataset_test = load_tfds("mnist", batch_size=batch_size, seed=seed, preprocess_fn=None)
     
-    model = VariationalAutoEncoder(x_dim, z_dim, device)
-    model.load_state_dict(torch.load("./models/checkpoint_z3.pth"))
+    model = ConditionalVariationalAutoEncoder(x_dim, z_dim, 10, device)
+    model.load_state_dict(torch.load("./models/checkpoint.pth"))
     model.eval()
 
-    for inputs in dataset_test:
-        inputs = inputs['image'] / 255
-        inputs = torch.from_numpy(np.array(inputs))
+    for data in dataset_test:
+        image = np.array(data['image'] / 255)
+        label = np.array(data['label'])
+        image = torch.from_numpy(np.array(image))
+        label = torch.from_numpy(np.array(label))
         fig, axes = plt.subplots(2, 10, figsize=(20, 4))
         # for a in axes:
         #     a.set_xticks([])
         #     a.set_yticks([])
 
-        _, _, y = model(inputs)
-        image_x = inputs.cpu().detach().numpy().reshape(-1, 28, 28)
+        _, _, y = model(image, label)
+        image_x = image.cpu().detach().numpy().reshape(-1, 28, 28)
         image_y = y.cpu().detach().numpy().reshape(-1, 28, 28)
         for j in range(batch_size):
             axes[0][j].imshow(image_x[j], "gray")
