@@ -58,10 +58,9 @@ def epoch_loop(model, data_set, optimizer, criterion, device, epoch, num_epochs,
                 l = torch.tensor([np.arange(0, 10)]).reshape((-1,))
                 z = torch.tensor([[-3, 0]], dtype=torch.float).repeat((10, 1))
                 r = model.decoder(z, l)
-                with torch.no_grad():
-                    r = torch.reshape(r, (r.shape[0], 1, 28, 28))
-                r = torchvision.utils.make_grid(r, nrow=10)
-                writer.add_images("reconstraction image", r, global_step=epoch)
+                r = torch.reshape(r, (r.shape[0], 1, 28, 28))
+                grid = torchvision.utils.make_grid(r, nrow=10)
+                writer.add_images("reconstraction image", grid, global_step=epoch)
         if earlystopping:
             earlystopping((running_loss), model)
     
